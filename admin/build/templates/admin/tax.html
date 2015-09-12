@@ -1,0 +1,51 @@
+<div class="row">
+    <div class="container">
+        <!-- Only show if we received data -->
+        <rd-widget>
+            <rd-widget-header>
+                <a class="pull-right btn btn-sm btn-info" ng-click="new()">+</a>
+            </rd-widget-header>
+            <rd-widget-body classes="none no-padding">
+                <div class="table-responsive">
+                    <!-- Only show table if we received data -->
+                    <table class="table table-striped" ng-show="tax.length > 0">
+                        <tr>
+                            <th>Country</th>
+                            <th>Percent</th>
+                            <th>Action</th>
+                        </tr>
+                        <tr ng-repeat="t in tax track by $index">
+                            <td>{{ t.country_name }}</td>
+                            <td>{{ t.percent }}</td>
+                            <td>
+                            <button class="btn btn-primary" ng-click="modify(t)">Modify</button>
+                            <button class="btn btn-danger" ng-click="delete(t)">Delete</button></td>
+                        </tr>
+                    </table>
+                </div>
+            </rd-widget-body>
+        <rd-widget>
+
+        <!-- Template script to add/modify tax -->
+        <script type="text/ng-template" id="tax.html">
+            <div class="modal-header">
+                <h3 class="modal-title">{{ action }}</h3>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Country:</label>
+                    <select ng-model="selected.country_id" ng-options="country.country_id as country.name for country in countries">
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Tax Percent</label>
+                    <input type="text" ng-model="selected.percent" class="form-control">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+                <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+            </div>
+        </script>
+    </div> <!-- /.row -->
+</div> <!-- /.container -->

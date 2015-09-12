@@ -3,17 +3,24 @@
  */
 
 angular.module('RDash')
-    .controller('MasterCtrl', ['$scope', '$cookieStore', MasterCtrl]);
+    .controller('MasterCtrl', ['$scope', '$cookieStore', '$state', '$http', MasterCtrl]);
 
-function MasterCtrl($scope, $cookieStore) {
+function MasterCtrl($scope, $cookieStore, $state, $http) {
     /**
      * Sidebar Toggle & Cookie Control
      */
+    
+    // Set the state of navigation   
+    $scope.$state = $state;
+    
     var mobileView = 992;
 
     $scope.getWidth = function() {
         return window.innerWidth;
     };
+
+    // Store the selected model to update
+    $scope.selected = '';
 
     $scope.$watch($scope.getWidth, function(newValue, oldValue) {
         if (newValue >= mobileView) {
@@ -33,7 +40,29 @@ function MasterCtrl($scope, $cookieStore) {
         $cookieStore.put('toggle', $scope.toggle);
     };
 
+    
+
     window.onresize = function() {
         $scope.$apply();
     };
+}
+
+angular.module('RDash')
+    .factory('LowStockService', ['$rootScope', LowStockService]);
+
+function LowStockService($rootScope) {
+    var sharedService = {};
+
+    sharedService.message = '';
+
+    sharedService.prepForBroadcast = function(msg) {
+        this.message = msg;
+        this.broadcastItem();
+    };
+
+    sharedService.reloadLowStockAlert = function() {
+        $rootScope.$broadcast('reloadLowStockAlert');
+    }
+
+    return sharedService;
 }

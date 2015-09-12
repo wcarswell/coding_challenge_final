@@ -10,7 +10,7 @@
     <!-- build:css lib/css/main.min.css -->
     <link rel="stylesheet" type="text/css" href="../../bower_components/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="../../bower_components/font-awesome/css/font-awesome.min.css">
-    <link rel="stylesheet" type="text/css" href="../../bower_components/rdash-ui/dist/css/rdash.min.css">
+    <link rel="stylesheet" type="text/css" href="../../bower_components/rdash-ui/dist/css/rdash.css">
     <!-- endbuild -->
 
     <!-- SCRIPTS -->
@@ -44,26 +44,15 @@
                     <a href="#">Dashboard <span class="menu-icon fa fa-tachometer"></span></a>
                 </li>
                 <li class="sidebar-list">
-                    <a href="#/tables">Tables <span class="menu-icon fa fa-table"></span></a>
+                    <a href="#/admin">Admin <span class="menu-icon fa fa-table"></span></a>
+                </li>
+                <li class="sidebar-list">
+                    <a href="#/product">Product<span class="menu-icon fa fa-table"></span></a>
+                </li>
+                <li class="sidebar-list">
+                    <a href="#/reports">Reports <span class="menu-icon fa fa-table"></span></a>
                 </li>
             </ul>
-            <div class="sidebar-footer">
-                <div class="col-xs-4">
-                    <a href="https://github.com/rdash/rdash-angular" target="_blank">
-                        Github
-                    </a>
-                </div>
-                <div class="col-xs-4">
-                    <a href="https://github.com/rdash/rdash-angular/README.md" target="_blank">
-                        About
-                    </a>
-                </div>
-                <div class="col-xs-4">
-                    <a href="#">
-                        Support
-                    </a>
-                </div>
-            </div>
         </div>
         <!-- End Sidebar -->
 
@@ -106,15 +95,19 @@
                                     </li>
                                 </ul>
                             </div>
-                            <div class="item dropdown">
+                            <div class="item dropdown" data-ng-controller="AlertsCtrl">
                                 <a href="#" class="dropdown-toggle">
-                                    <i class="fa fa-bell-o"></i>
+                                    <i class="fa fa-bell-o" ng-class="{'red-alert':alerts.length>0}"> {{ alerts.length }}</i>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-right">
                                     <li class="dropdown-header">
-                                        Notifications
+                                        <span ng-show="alerts.lengt>0">Notifications</span>
+                                        <span ng-show="alerts.length==0">No new updates</span>
                                     </li>
-                                    <li class="divider"></li>
+                                    <li class="divider" ng-show="alerts.lengt>0"></li>
+                                    <li data-ng-repeat="alert in alerts">
+                                        <a href="#/product">{{ alert.msg }}</a>
+                                    </li>
                                     <!-- <li>
                                         <a href="#">Server Down!</a>
                                     </li> -->
@@ -123,10 +116,10 @@
                         </div>
                         <div class="meta">
                             <div class="page">
-                                Dashboard
+                                {{ $state.current.topName }}
                             </div>
                             <div class="breadcrumb-links">
-                                Home / Dashboard
+                                {{ $state.current.path }}
                             </div>
                         </div>
                     </div>

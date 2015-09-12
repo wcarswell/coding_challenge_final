@@ -1,0 +1,93 @@
+<div class="row">
+    <div class="container">
+        <!-- Only show if we received data -->
+        <rd-widget>
+            <rd-widget-header>
+                <a class="pull-right btn btn-sm btn-info" ng-click="new()">+</a>
+            </rd-widget-header>
+            <rd-widget-body classes="none no-padding">
+                <div class="table-responsive">
+                    <!-- Only show table if we received data -->
+                    <table class="table table-striped" ng-show="clinics.length > 0">
+                        <tr>
+                            <th>Clinic</th>
+                            <th>Street</th>
+                            <th>City</th>
+                            <th>Province</th>
+                            <th>Post Code</th>
+                            <th>Telephone Number</th>
+                            <th>Fax Number</th>
+                            <th>Clinic Number</th>
+                            <th>Country</th>
+                            <th>Action</th>
+                        </tr>
+                        <tr ng-repeat="clinic in clinics track by $index">
+                            <td>{{clinic.name}}</td>
+                            <td>{{clinic.street}}</td>
+                            <td>{{clinic.city}}</td>
+                            <td>{{clinic.province}}</td>
+                            <td>{{clinic.post_code}}</td>
+                            <td>{{clinic.telephone_number}}</td>
+                            <td>{{clinic.fax_number}}</td>
+                            <td>{{clinic.clinic_number}}</td>
+                            <td>{{clinic.country_name}}</td>
+                            <td>
+                            <button class="btn btn-primary" ng-click="modify(clinic)">Modify</button>
+                            <button class="btn btn-danger" ng-click="delete(clinic)">Delete</button></td>
+                        </tr>
+                    </table>
+                </div>
+            </rd-widget-body>
+        <rd-widget>
+
+        <!-- Template script to add/modify country -->
+        <script type="text/ng-template" id="clinic.html">
+            <div class="modal-header">
+                <h3 class="modal-title">{{ action }}</h3>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Clinic Name:</label>
+                    <input type="text" ng-model="selected.name" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Street:</label>
+                    <input type="text" ng-model="selected.street" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>City:</label>
+                    <input type="text" ng-model="selected.city" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Province:</label>
+                    <input type="text" ng-model="selected.province" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Post Code:</label>
+                    <input type="text" ng-model="selected.post_code" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Telephone Number:</label>
+                    <input type="text" ng-model="selected.telephone_number" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Fax Number:</label>
+                    <input type="text" ng-model="selected.fax_number" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Clinic Number:</label>
+                    <input type="text" ng-model="selected.clinic_number" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Country Name:</label>
+                    <select ng-model="selected.country_id" ng-options="country.country_id as country.name for country in countries">
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+                <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+            </div>
+        </script>
+    </div> <!-- /.row -->
+</div> <!-- /.container -->
