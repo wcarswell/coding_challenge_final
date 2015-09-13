@@ -10,13 +10,25 @@
                     <!-- Only show table if we received data -->
                     <table class="table table-striped" ng-show="tax.length > 0">
                         <tr>
-                            <th>Country</th>
-                            <th>Percent</th>
+                            <th>
+                                <a href="javascript: void(0);" ng-click="sortType = 'country_name'; sortReverse = !sortReverse">
+                                    <span ng-show="sortType == 'country_name' && !sortReverse" class="fa fa-caret-down"></span>
+                                    <span ng-show="sortType == 'country_name' && sortReverse" class="fa fa-caret-up"></span>
+                                    Country
+                                </a>
+                            </th>
+                            <th>
+                                <a href="javascript: void(0);" ng-click="sortType = 'percent'; sortReverse = !sortReverse">
+                                    <span ng-show="sortType == 'percent' && !sortReverse" class="fa fa-caret-down"></span>
+                                    <span ng-show="sortType == 'percent' && sortReverse" class="fa fa-caret-up"></span>
+                                    Percentile
+                                </a>
+                            </th>
                             <th>Action</th>
                         </tr>
-                        <tr ng-repeat="t in tax track by $index">
+                        <tr ng-repeat="t in tax | orderBy:sortType:sortReverse">
                             <td>{{ t.country_name }}</td>
-                            <td>{{ t.percent }}</td>
+                            <td>{{ t.percent | number }}</td>
                             <td>
                             <button class="btn btn-primary" ng-click="modify(t)">Modify</button>
                             <button class="btn btn-danger" ng-click="delete(t)">Delete</button></td>

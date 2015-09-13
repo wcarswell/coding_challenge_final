@@ -458,11 +458,11 @@ class AdminController extends Controller
         $tax = $request->input('tax');
 
         // Check if country name is unique
-        if( Tax::where('country_id', $tax['country_id'])->count() > 0 ) {
-            return response()->json(
-                array('status' => 'fail','message' => 'Tax Setup exists')
-            );
-        }
+        // if( Tax::where('country_id', $tax['country_id'])->count() > 0 ) {
+        //     return response()->json(
+        //         array('status' => 'fail','message' => 'Tax Setup exists')
+        //     );
+        // }
 
         // Fetch Posted country variables
         $tax = $request->input('tax');

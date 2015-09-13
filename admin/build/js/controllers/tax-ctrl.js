@@ -9,9 +9,9 @@
  */
 angular
     .module('RDash')
-    .controller('TaxCtrl', ['$scope', '$state', '$http', '$modal', '$log', TaxCtrl]);
+    .controller('TaxCtrl', ['$scope', '$state', '$http', '$modal', '$log', 'LowStockService', TaxCtrl]);
 
-function TaxCtrl($scope, $state, $http, $modal, $log) {
+function TaxCtrl($scope, $state, $http, $modal, $log, LowStockService) {
     // Controller configs
     $scope.config = {
         'new': 'Add Tax For Country', // modal new description
@@ -29,11 +29,22 @@ function TaxCtrl($scope, $state, $http, $modal, $log) {
     // Set the state of navigation    
     $scope.$state = $state;
 
+    // Set the default sort type
+    $scope.sortType = 'country_name';
+
+    // Set the default sort order
+    $scope.sortReverse  = false;  // set the default sort order
+
     // Loads/Reloads tax list
     $scope.reloadTaxList = function() {
         $http.get($scope.config.endPoint).success(function(data, status, headers, config) {
             // Bind tax to return value    
             $scope.tax = data;
+
+            // Convert percentile to number
+            angular.forEach($scope.tax, function (tax) {
+                tax.percent = parseFloat(tax.percent);
+            });
         });
     }
 
@@ -70,6 +81,9 @@ function TaxCtrl($scope, $state, $http, $modal, $log) {
             if (response.data.status != 'fail') {
                 // Reload tax list on success
                 $scope.reloadTaxList();
+
+                // Display deleted message
+                LowStockService.displayFlashMessage('Tax setup deleted for Country ' + tax.country_name);
             } else {
                 // Alert user on any errors
                 alert(response.data.message);
@@ -109,6 +123,13 @@ function TaxCtrl($scope, $state, $http, $modal, $log) {
         modalTax.result.then(function(selectedItem) {
             // Reload tax list on success
             $scope.reloadTaxList();
+
+            // Display deleted/updated message
+            if(action == $scope.config.new) {
+                LowStockService.displayFlashMessage('Tax setup added');
+            } else {
+                LowStockService.displayFlashMessage('tax setup modified for Country ' + tax.country_name);
+            }
         }, function() {
             // Log messaging for debug purpose
             $log.info('Modal dismissed at: ' + new Date());
@@ -138,44 +159,53 @@ function ModalTaxCtrl($scope, $modalInstance, $http, tax, action, config, countr
     // Event for inserting/updating a tax
     $scope.ok = function() {
         // Validate input
+        var msg = '';
+
         if($scope.selected.percent.length > 3 || $scope.selected.percent > 100) {
-            alert('Percent value must be smaller than 100');
-            return;
+            msg += 'Percent value must be smaller than 100\n';
+        }
+
+        if($scope.selected.percent < 0 ) {
+            msg += 'Percent value must be larger than 0\n';
         }
 
         if(isNaN(parseFloat($scope.selected.percent)) && !isFinite($scope.selected.percent)) {
-            alert('Percent value must contain numbers');
-            return;
-        }
-        
-        var url = config.endPoint;
-
-        // Add tax_id if modifying
-        if (tax.hasOwnProperty('tax_id')) {
-            url += tax.tax_id + '/';
+            msg += 'Percent value must contain numbers';
         }
 
-        // Ajax call to post to tax information
-        $http({
-            url: url,
-            method: "POST",
-            data: {
-                'tax': $scope.selected
+        // Only insert/update if no errors
+        if(msg == '') {
+            var url = config.endPoint;
+
+            // Add tax_id if modifying
+            if (tax.hasOwnProperty('tax_id')) {
+                url += tax.tax_id + '/';
             }
-        })
-        .then(function(response) {
-            if (response.data.status != 'fail') {
-                // Close modal on success
-                $modalInstance.close();
-            } else {
-                // Alert user on any errors
-                alert(response.data.message);
-            }
-        },
-        function(response) { // optional
-            // Inserting/Updating has failed, alert user
-            alert('Failed to insert/update tax setup');
-        });
+
+            // Ajax call to post to tax information
+            $http({
+                url: url,
+                method: "POST",
+                data: {
+                    'tax': $scope.selected
+                }
+            })
+            .then(function(response) {
+                if (response.data.status != 'fail') {
+                    // Close modal on success
+                    $modalInstance.close(action);
+                } else {
+                    // Alert user on any errors
+                    alert(response.data.message);
+                }
+            },
+            function(response) { // optional
+                // Inserting/Updating has failed, alert user
+                alert('Failed to insert/update tax setup');
+            });
+        } else {
+            alert(msg);
+        }
     };
 
     // Event to dismiss modal
