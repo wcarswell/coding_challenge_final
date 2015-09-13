@@ -34,7 +34,7 @@ function ClinicCtrl($scope, $state, $http, $modal, $log, LowStockService) {
     $scope.sortType = 'name';
 
     // Set the default sort order
-    $scope.sortReverse  = false;  // set the default sort order
+    $scope.sortReverse  = false;
 
     // Loads/Reloads clinic list
     $scope.reloadClinicList = function() {

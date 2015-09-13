@@ -8,20 +8,54 @@
                 <div class="table-responsive">
                     <!-- Only show table if we received data -->
                     <table class="table table-striped" ng-show="products.length > 0">
-                        <tr>
-                            <th>Country</th>
-                            <th>Clinic</th>
-                            <th>Type</th>
-                            <th>Name</th>
-                            <th>#</th>
-                        </tr>
-                        <tr ng-repeat="product in products track by $index">
-                            <td>{{product.country_name}}</td>
-                            <td>{{product.clinic_name}}</td>
-                            <td>{{product.type}}</td>
-                            <td>{{product.name}}</td>
-                            <td><span class="label" ng-class="{'label-warning':product.quantity_on_hand==3,'label-danger':product.quantity_on_hand<=2,'label-default':product.quantity_on_hand>3}">{{product.quantity_on_hand}}</span></td>
-                        </tr>
+                        <thead>
+                            <tr>
+                               <th>
+                                    <a href="javascript: void(0);" ng-click="sortType = 'country_name'; sortReverse = !sortReverse">
+                                        <span ng-show="sortType == 'country_name' && !sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType == 'country_name' && sortReverse" class="fa fa-caret-up"></span>
+                                        Country
+                                    </a>
+                                </th>
+                                <th>
+                                    <a href="javascript: void(0);" ng-click="sortType = 'clinic_name'; sortReverse = !sortReverse">
+                                        <span ng-show="sortType == 'clinic_name' && !sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType == 'clinic_name' && sortReverse" class="fa fa-caret-up"></span>
+                                        Clinic
+                                    </a>
+                                </th>
+                                <th>
+                                    <a href="javascript: void(0);" ng-click="sortType = 'type'; sortReverse = !sortReverse">
+                                        <span ng-show="sortType == 'type' && !sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType == 'type' && sortReverse" class="fa fa-caret-up"></span>
+                                        Type
+                                    </a>
+                                </th>
+                                <th>
+                                    <a href="javascript: void(0);" ng-click="sortType = 'name'; sortReverse = !sortReverse">
+                                        <span ng-show="sortType == 'name' && !sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType == 'name' && sortReverse" class="fa fa-caret-up"></span>
+                                        Product
+                                    </a>
+                                </th>
+                                <th>
+                                    <a href="javascript: void(0);" ng-click="sortType = 'quantity_on_hand'; sortReverse = !sortReverse">
+                                        <span ng-show="sortType == 'quantity_on_hand' && !sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType == 'quantity_on_hand' && sortReverse" class="fa fa-caret-up"></span>
+                                        Quantity On Hand
+                                    </a>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="product in products | orderBy:sortType:sortReverse">
+                                <td>{{product.country_name}}</td>
+                                <td>{{product.clinic_name}}</td>
+                                <td>{{product.type}}</td>
+                                <td><a href="#/order">{{product.name}}</a></td>
+                                <td><span class="label" ng-class="{'label-warning':product.quantity_on_hand==3,'label-danger':product.quantity_on_hand<=2,'label-default':product.quantity_on_hand>3}">{{product.quantity_on_hand}}</span></td>
+                            </tr>
+                        </tbody>
                     </table>
                 </div>
             </rd-widget-body>

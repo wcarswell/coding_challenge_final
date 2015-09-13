@@ -9,9 +9,9 @@
  */
 angular
     .module('RDash')
-    .controller('VendorCtrl', ['$scope', '$state', '$http', '$modal', '$log', VendorCtrl]);
+    .controller('VendorCtrl', ['$scope', '$state', '$http', '$modal', '$log', 'LowStockService', VendorCtrl]);
 
-function VendorCtrl($scope, $state, $http, $modal, $log) {
+function VendorCtrl($scope, $state, $http, $modal, $log, LowStockService) {
     // Controller configs
     $scope.config = {
         'new': 'Add Vendor', // modal new description
@@ -27,6 +27,12 @@ function VendorCtrl($scope, $state, $http, $modal, $log) {
 
     // Set the state of navigation    
     $scope.$state = $state;
+
+    // Set the default sort order
+    $scope.sortReverse  = false;  
+
+    // Set the default sort type
+    $scope.sortType = 'name';
 
     // Loads/Reloads vendor list
     $scope.reloadVendorList = function() {
@@ -61,6 +67,9 @@ function VendorCtrl($scope, $state, $http, $modal, $log) {
             if (response.data.status != 'fail') {
                 // Reload tax list on success
                 $scope.reloadVendorList();
+
+                // Display deleted message
+                LowStockService.displayFlashMessage('Vendor deleted: ' + vendor.name);
             } else {
                 // Alert user on any errors
                 alert(response.data.message);
@@ -94,9 +103,16 @@ function VendorCtrl($scope, $state, $http, $modal, $log) {
         });
 
         // Bind callback functions for save/cancel button
-        modalVendor.result.then(function(selectedItem) {
+        modalVendor.result.then(function(action) {
             // Reload vendor list on success
             $scope.reloadVendorList();
+
+            // Display deleted/updated message
+            if(action == $scope.config.new) {
+                LowStockService.displayFlashMessage('Vendor added');
+            } else {
+                LowStockService.displayFlashMessage('Vendor modified: ' + vendor.name);
+            }
         }, function() {
             // Log messaging for debug purpose
             $log.info('Modal dismissed at: ' + new Date());
@@ -118,35 +134,54 @@ function ModalVendorCtrl($scope, $modalInstance, $http, vendor, action, config) 
     // Set selected vendor to modal passed through
     $scope.selected = vendor;
 
+    // Validation function to test email
+    $scope.validateEmail = function(email) {
+        var re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+        return re.test(email);
+    }
+
     // Event for inserting/updating a vendor
     $scope.ok = function() {
+        var msg = '';
         
-        var url = config.endPoint;
-        if (vendor.hasOwnProperty('vendor_id')) {
-            url += vendor.vendor_id + '/';
+        if( $scope.selected.name == '') {
+            msg += 'Name cannot be empty\n';
+        } 
+
+        if( !$scope.validateEmail($scope.selected.email) ) {
+            msg += 'Valid email address in format foo@example.com';
         }
 
-        // Ajax call to post to vendor information
-        $http({
-            url: url,
-            method: "POST",
-            data: {
-                'vendor': $scope.selected
+        if(msg == '') {
+            var url = config.endPoint;
+            if (vendor.hasOwnProperty('vendor_id')) {
+                url += vendor.vendor_id + '/';
             }
-        })
-        .then(function(response) {
-            if (response.data.status != 'fail') {
-                // Close modal on success
-                $modalInstance.close();
-            } else {
-                // Alert user on any errors
-                alert(response.data.message);
-            }
-        },
-        function(response) { // optional
-            // Inserting/Updating has failed, alert user
-            alert('Failed to insert/update vendor setup');
-        });
+
+            // Ajax call to post to vendor information
+            $http({
+                url: url,
+                method: "POST",
+                data: {
+                    'vendor': $scope.selected
+                }
+            })
+            .then(function(response) {
+                if (response.data.status != 'fail') {
+                    // Close modal on success
+                    $modalInstance.close(action);
+                } else {
+                    // Alert user on any errors
+                    alert(response.data.message);
+                }
+            },
+            function(response) { // optional
+                // Inserting/Updating has failed, alert user
+                alert('Failed to insert/update vendor setup');
+            });
+        } else {
+            alert(msg);
+        }
     };
 
     // Event to dismiss modal

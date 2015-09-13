@@ -76,6 +76,7 @@ class AdminController extends Controller
         // Fetch Posted country variables
         $order = $request->input('order');
         $orderLines = $request->input('orderlines');
+        $currentlines = $request->input('currentlines');
 
         // Modify entry
         if( !empty($order['vendor_id']) && !empty($order['tax_id']) ) {
@@ -92,6 +93,13 @@ class AdminController extends Controller
             // Set is_paid to y if set
             if(1 == $order['is_paid']) {
                 $order['is_paid'] = 'y';
+            }
+
+            if( $order['items_received'] == 'y' && (count($currentlines) == 0 && count($orderLines) == 0) ) {
+                return array(
+                    'status' => 'fail',
+                    'message' => 'Order line empty, how could we receive the goods?'
+                );
             }
 
             // Update stock order
@@ -164,6 +172,14 @@ class AdminController extends Controller
 
         if(1 == $order['is_paid']) {
             $order['is_paid'] = 'y';
+        }
+
+
+        if($order['items_received'] == 'y' && count($orderLines) == 0) {
+            return array(
+                'status' => 'fail',
+                'message' => 'Order line empty, how could we receive the goods?'
+            );
         }
 
         $stockOrder = new StockOrder(

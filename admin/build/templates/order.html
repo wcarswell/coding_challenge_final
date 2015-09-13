@@ -9,40 +9,70 @@
                 <div class="table-responsive">
                   	<!-- Only show table if we received data -->
 				    <table class="table table-striped" ng-show="orders.length > 0">
-				        <tr>
-				            <th>ID</th>
-				            <th>Vendor</th>
-				         <!--    <th>Total</th>
-				            <th>Tax</th>
-				            <th>Tax Percent</th> -->
-				            <th>Paid</th>
-				            <th>Received Goods</th>
-				            <th>Order Lines</th>
-				            <th>Date</th>
-				            <th>Action</th>
-				        </tr>
-				        <tr ng-repeat="order in orders track by $index">
-				            <td>{{ order.stock_order_id }}</td>
-				            <td>{{ order.vendor_name }}</td>
-				          <!--   <td align="right">{{ order.total}}</td>
-				            <td align="right">{{ order.tax}}</td>
-				            <td align="right">{{ order.tax_percent}}%</td> -->
-				            <td>
-				                <span ng-show="order.is_paid=='y'">y</span><span ng-show="order.is_paid!='y'">n</span></td>
-				            <td>
-				                <span ng-show="order.items_received=='y'">y</span><span ng-show="order.items_received!='y'">n</span></td>
-				            <td>
-				                <ul ng-show="order.orderLines.length > 0">
-				                    <li ng-repeat="orderLine in order.orderLines track by $index">
-				                        {{orderLine.clinic_name}}:<br />{{orderLine.product_name}} X {{orderLine.quantity}}
-				                    </li>
-				                </ul>
-				            </td>
-				            <td>{{ order.created_at}}</td>
-				            <td>
-				            <button class="btn btn-primary" ng-click="modify(order)" ng-show="order.items_received!='y'">Modify</button>
-				            <button class="btn btn-danger" ng-click="delete(order)" ng-show="order.items_received!='y'">Delete</button></td>
-				        </tr>
+				    	<thead>
+					        <tr>
+					            <th>
+	                                <a href="javascript: void(0);" ng-click="sortType = 'stock_order_id'; sortReverse = !sortReverse">
+	                                    <span ng-show="sortType == 'stock_order_id' && !sortReverse" class="fa fa-caret-down"></span>
+	                                    <span ng-show="sortType == 'stock_order_id' && sortReverse" class="fa fa-caret-up"></span>
+	                                    Order ID
+	                                </a>
+	                            </th>
+					            <th>
+	                                <a href="javascript: void(0);" ng-click="sortType = 'vendor_name'; sortReverse = !sortReverse">
+	                                    <span ng-show="sortType == 'vendor_name' && !sortReverse" class="fa fa-caret-down"></span>
+	                                    <span ng-show="sortType == 'vendor_name' && sortReverse" class="fa fa-caret-up"></span>
+	                                    Vendor
+	                                </a>
+	                            </th>
+					            <th>
+	                                <a href="javascript: void(0);" ng-click="sortType = 'is_paid'; sortReverse = !sortReverse">
+	                                    <span ng-show="sortType == 'is_paid' && !sortReverse" class="fa fa-caret-down"></span>
+	                                    <span ng-show="sortType == 'is_paid' && sortReverse" class="fa fa-caret-up"></span>
+	                                    Paid
+	                                </a>
+	                            </th>
+					            <th>
+	                                <a href="javascript: void(0);" ng-click="sortType = 'items_received'; sortReverse = !sortReverse">
+	                                    <span ng-show="sortType == 'items_received' && !sortReverse" class="fa fa-caret-down"></span>
+	                                    <span ng-show="sortType == 'items_received' && sortReverse" class="fa fa-caret-up"></span>
+	                                    Stock Received
+	                                </a>
+	                            </th>
+					            <th>
+	                                Order Line
+	                            </th>
+					            <th>
+	                                <a href="javascript: void(0);" ng-click="sortType = 'updated_at'; sortReverse = !sortReverse">
+	                                    <span ng-show="sortType == 'updated_at' && !sortReverse" class="fa fa-caret-down"></span>
+	                                    <span ng-show="sortType == 'updated_at' && sortReverse" class="fa fa-caret-up"></span>
+	                                    Date
+	                                </a>
+	                            </th>
+					            <th>Action</th>
+					        </tr>
+				        </thead>
+				        <tbody>
+					        <tr ng-repeat="order in orders | orderBy:sortType:sortReverse">
+					            <td>{{ order.stock_order_id }}</td>
+					            <td>{{ order.vendor_name }}</td>
+					            <td>
+					                <span ng-show="order.is_paid=='y'">y</span><span ng-show="order.is_paid!='y'">n</span></td>
+					            <td>
+					                <span ng-show="order.items_received=='y'">y</span><span ng-show="order.items_received!='y'">n</span></td>
+					            <td>
+					                <ul ng-show="order.orderLines.length > 0">
+					                    <li ng-repeat="orderLine in order.orderLines track by $index">
+					                        {{ orderLine.clinic_name }}:<br />{{ orderLine.product_name }} X {{ orderLine.quantity }}
+					                    </li>
+					                </ul>
+					            </td>
+					            <td>{{ order.updated_at }}</td>
+					            <td>
+					            <button class="btn btn-primary" ng-click="modify(order)" ng-show="order.items_received!='y' || order.is_paid!='y' ">Modify</button>
+					            <button class="btn btn-danger" ng-click="delete(order)" ng-show="order.items_received!='y'">Delete</button></td>
+					        </tr>
+				        </tbody>
 				    </table>
                 </div>
             </rd-widget-body>
@@ -82,10 +112,9 @@
 	                    <button class="btn btn-danger btn-outline btn-rounded" ng-click="removeOrderLine($index, ordersLines)">X</button>
 	                </p>
 	            </div>
-	            <div class="form-group">
+	            <div class="form-group" ng-show="selected.items_received!='y'">
 	                <label>Did we receive the items?:</label>
 	                <input type='checkbox' ng-model="selected.items_received" class="form-control" />
-
 	            </div>
 	            <div class="form-group">
 	                <label>Did we pay for the items?:</label>

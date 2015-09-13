@@ -29,7 +29,7 @@ function CountryCtrl($scope, $state, $http, $modal, $log, LowStockService) {
 	$scope.sortType     = 'name';
 
 	// Set the default sort order
-  	$scope.sortReverse  = false;  // set the default sort order
+  	$scope.sortReverse  = false;
 	
 	// Store the selected model to update
 	$scope.selected = '';

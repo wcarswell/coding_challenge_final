@@ -24,11 +24,22 @@ function LowStockCtrl($scope, $state, $http, $modal, $log) {
     // Set the state of navigation    
     $scope.$state = $state;
 
+    // Set the default sort type
+    $scope.sortType = 'quantity_on_hand';
+
+    // Set the default sort order
+    $scope.sortReverse  = false;
+
     // Loads/Reloads low stock list
     $scope.reloadLowStockList = function() {
         $http.get($scope.config.endPoint).success(function(data, status, headers, config) {
             // Bind tax to return value    
             $scope.products = data;
+
+            // Convert quantity_on_hand to number
+            angular.forEach($scope.products, function (products) {
+                products.quantity_on_hand = parseFloat(products.quantity_on_hand);
+            });
         });
     }
 

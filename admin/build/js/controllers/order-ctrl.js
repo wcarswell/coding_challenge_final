@@ -9,9 +9,9 @@
  */
 angular
     .module('RDash')
-    .controller('OrderCtrl', ['$scope', '$state', '$http', '$modal', '$log', OrderCtrl]);
+    .controller('OrderCtrl', ['$scope', '$state', '$http', '$modal', '$log', 'LowStockService', OrderCtrl]);
 
-function OrderCtrl($scope, $state, $http, $modal, $log) {
+function OrderCtrl($scope, $state, $http, $modal, $log, LowStockService) {
 
     // Controller configs
     $scope.config = {
@@ -34,6 +34,12 @@ function OrderCtrl($scope, $state, $http, $modal, $log) {
 
     // Set the state of navigation    
     $scope.$state = $state;
+
+    // Set the default sort type
+    $scope.sortType = 'stock_order_id';
+
+    // Set the default sort order
+    $scope.sortReverse  = true;
 
     // Loads/Reloads order list
     $scope.reloadOrdersList = function() {
@@ -92,6 +98,10 @@ function OrderCtrl($scope, $state, $http, $modal, $log) {
             if (response.data.status != 'fail') {
                 // Reload order list on success
                 $scope.reloadOrdersList();
+
+                // Display deleted message
+                LowStockService.displayFlashMessage('Order deleted');
+           
             } else {
                 // Alert user on any errors
                 alert(response.data.message);
@@ -134,10 +144,17 @@ function OrderCtrl($scope, $state, $http, $modal, $log) {
         });
 
         // Bind callback functions for save/cancel button
-        modalOrder.result.then(function(selectedItem) {
+        modalOrder.result.then(function(action) {
             // Reload lists
             $scope.reloadOrdersList();
-            $scope.reloadLowStockAlert();
+            LowStockService.reloadLowStockAlert();
+
+            // Display deleted/updated message
+            if(action == $scope.config.new) {
+                LowStockService.displayFlashMessage('Order added');
+            } else {
+                LowStockService.displayFlashMessage('Order modfied');
+            }
         }, function() {
             // Log messaging for debug purpose
             $scope.reloadOrdersList();
@@ -237,20 +254,21 @@ function ModalOrderCtrl($scope, $modalInstance, $http, order, action, config, ve
         if (order.hasOwnProperty('stock_order_id')) {
             url += order.stock_order_id + '/';
         }
-        console.log( $scope.ordersLines);
+
         // // Ajax call to post to clinic information
         $http({
             url: url,
             method: "POST",
             data: {
                 'order': $scope.selected,
-                'orderlines': $scope.ordersLines
+                'orderlines': $scope.ordersLines,
+                'currentlines': $scope.currentOrderLine,
             }
         })
         .then(function(response) {
             if (response.data.status != 'fail') {
                 // Close modal on success
-                $modalInstance.close();
+                $modalInstance.close(action);
             } else {
                 // Alert user on any errors
                 alert(response.data.message);

@@ -9,30 +9,34 @@
                 <div class="table-responsive">
                     <!-- Only show table if we received data -->
                     <table class="table table-striped" ng-show="tax.length > 0">
-                        <tr>
-                            <th>
-                                <a href="javascript: void(0);" ng-click="sortType = 'country_name'; sortReverse = !sortReverse">
-                                    <span ng-show="sortType == 'country_name' && !sortReverse" class="fa fa-caret-down"></span>
-                                    <span ng-show="sortType == 'country_name' && sortReverse" class="fa fa-caret-up"></span>
-                                    Country
-                                </a>
-                            </th>
-                            <th>
-                                <a href="javascript: void(0);" ng-click="sortType = 'percent'; sortReverse = !sortReverse">
-                                    <span ng-show="sortType == 'percent' && !sortReverse" class="fa fa-caret-down"></span>
-                                    <span ng-show="sortType == 'percent' && sortReverse" class="fa fa-caret-up"></span>
-                                    Percentile
-                                </a>
-                            </th>
-                            <th>Action</th>
-                        </tr>
-                        <tr ng-repeat="t in tax | orderBy:sortType:sortReverse">
-                            <td>{{ t.country_name }}</td>
-                            <td>{{ t.percent | number }}</td>
-                            <td>
-                            <button class="btn btn-primary" ng-click="modify(t)">Modify</button>
-                            <button class="btn btn-danger" ng-click="delete(t)">Delete</button></td>
-                        </tr>
+                        <thead>
+                            <tr>
+                                <th>
+                                    <a href="javascript: void(0);" ng-click="sortType = 'country_name'; sortReverse = !sortReverse">
+                                        <span ng-show="sortType == 'country_name' && !sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType == 'country_name' && sortReverse" class="fa fa-caret-up"></span>
+                                        Country
+                                    </a>
+                                </th>
+                                <th>
+                                    <a href="javascript: void(0);" ng-click="sortType = 'percent'; sortReverse = !sortReverse">
+                                        <span ng-show="sortType == 'percent' && !sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType == 'percent' && sortReverse" class="fa fa-caret-up"></span>
+                                        Percentile
+                                    </a>
+                                </th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="t in tax | orderBy:sortType:sortReverse">
+                                <td>{{ t.country_name }}</td>
+                                <td>{{ t.percent | number }}</td>
+                                <td>
+                                <button class="btn btn-primary" ng-click="modify(t)">Modify</button>
+                                <button class="btn btn-danger" ng-click="delete(t)">Delete</button></td>
+                            </tr>
+                        </tbody>
                     </table>
                 </div>
             </rd-widget-body>

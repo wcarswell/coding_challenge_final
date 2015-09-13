@@ -33,7 +33,7 @@ function TaxCtrl($scope, $state, $http, $modal, $log, LowStockService) {
     $scope.sortType = 'country_name';
 
     // Set the default sort order
-    $scope.sortReverse  = false;  // set the default sort order
+    $scope.sortReverse  = false;  
 
     // Loads/Reloads tax list
     $scope.reloadTaxList = function() {
