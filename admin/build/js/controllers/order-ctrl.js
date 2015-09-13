@@ -237,6 +237,9 @@ function ModalOrderCtrl($scope, $modalInstance, $http, order, action, config, ve
     // Event for fetching available products for Clinic
     $scope.getProductsByClinic = function(clinic_id, index, ordersLines)
     {   
+        // Reset products
+        $scope.ordersLines[index].products = '';
+
         var url = config.endPointClinicProduct;
         url += clinic_id + '/';
 
