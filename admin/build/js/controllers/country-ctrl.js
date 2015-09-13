@@ -2,7 +2,7 @@
 
 /**
  * @ngdoc function
- * @name yapp.controller:CountryCtrl
+ * @name RDash.controller:CountryCtrl
  * @description
  * # CountryCtrl
  * Controller of RDash
@@ -108,9 +108,16 @@ function CountryCtrl($scope, $state, $http, $modal, $log, LowStockService) {
 		});
 		
 		// Bind callback functions for save/cancel button
-		modalCountry.result.then(function() {
+		modalCountry.result.then(function(action) {
 			// Reload country list on success
 			$scope.reloadCountryList();
+
+			// Display deleted/updated message
+			if(action == $scope.config.new) {
+				LowStockService.displayFlashMessage('Country added');
+			} else {
+				LowStockService.displayFlashMessage('Country modfied: ' + country.name);
+			}
 		}, function() {
 			// Log messaging for debug purpose
 			$log.info('Modal dismissed at: ' + new Date());
@@ -123,7 +130,7 @@ function CountryCtrl($scope, $state, $http, $modal, $log, LowStockService) {
 
 /**
  * @ngdoc function
- * @name yapp.controller:ModalCountryCtrl
+ * @name RDash.controller:ModalCountryCtrl
  * @description
  * # ModalCountryCtrl
  * Modal for inserting/modirying country
@@ -141,34 +148,51 @@ function ModalCountryCtrl($scope, $modalInstance, $http, country, action, config
 
 	// Event for inserting/updating a country
     $scope.ok = function() {
-    	var url = config.endPoint;
-
-    	// Add country_id if modifying
-    	if( country.hasOwnProperty('country_id') ) {
-    		url += country.country_id + '/';
+    	var msg = '';
+    	
+    	// Validation
+    	if($scope.selected.name === '') {
+    		msg += 'Country name cannot be empty\n';
     	}
 
-		// Ajax call to post to country information
-        $http({
-			url: url,
-			method: "POST",
-			data: {
-				'country': $scope.selected
-			}
-		})
-		.then(function(response) {
-			if (response.data.status != 'fail') {
-				// Close modal on success
-				$modalInstance.close();
-			} else {
-				// Alert user on any errors
-				alert(response.data.message);
-			}
-		},
-		function(response) { // optional
-			// Inserting/Updating has failed, alert user
-			alert('Failed to insert/update country');
-		});
+    	if($scope.selected.currency === '') {
+    		msg += 'Currency name cannot be empty\n';
+    	}
+
+    	// Only insert/update if no errors
+    	if(msg == '') {
+
+	    	var url = config.endPoint;
+
+	    	// Add country_id if modifying
+	    	if( country.hasOwnProperty('country_id') ) {
+	    		url += country.country_id + '/';
+	    	}
+
+			// Ajax call to post to country information
+	        $http({
+				url: url,
+				method: "POST",
+				data: {
+					'country': $scope.selected
+				}
+			})
+			.then(function(response) {
+				if (response.data.status != 'fail') {
+					// Close modal on success
+					$modalInstance.close(action);
+				} else {
+					// Alert user on any errors
+					alert(response.data.message);
+				}
+			},
+			function(response) { // optional
+				// Inserting/Updating has failed, alert user
+				alert('Failed to insert/update country');
+			});
+		} else {
+			alert(msg);
+		}
     };
 	
 	// Event to dismiss modal
@@ -179,7 +203,7 @@ function ModalCountryCtrl($scope, $modalInstance, $http, country, action, config
 
 /**
  * @ngdoc function
- * @name yapp.controller:ModalCountryCtrlDelete
+ * @name RDash.controller:ModalCountryCtrlDelete
  * @description
  * # ModalCountryCtrlDelete
  * Modal for deleting country

@@ -13,7 +13,18 @@ class ReportController extends Controller
     {
 		// Return all countries alphabetically
         $product = new Product;
-		return $product->scopeLowStock( getenv('LOW_STOCK') );
+        $low_stock = $product->scopeLowStock( getenv('LOW_STOCK') );
+
+        // Notify admin on unseen low stock 
+        $this->notifyLowStock($low_stock);
+
+		return $low_stock;
+    }
+
+    public function notifyLowStock($low_stock) 
+    {
+        // Here we write code to write into notification table 
+        //  and send info to procurement manager
     }
 
     public function productList()

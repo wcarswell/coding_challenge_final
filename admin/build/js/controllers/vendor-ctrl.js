@@ -2,10 +2,10 @@
 
 /**
  * @ngdoc function
- * @name yapp.controller:CountryCtrl
+ * @name RDash.controller:CountryCtrl
  * @description
  * # CountryCtrl
- * Controller of yapp
+ * Controller of RDash
  */
 angular
     .module('RDash')

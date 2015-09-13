@@ -33,15 +33,12 @@
             <ul class="sidebar">
                 <li class="sidebar-main">
                     <a ng-click="toggleSidebar()">
-                        SMS v2
+                        {{ systemName }}
                         <span class="menu-icon glyphicon glyphicon-transfer"></span>
                     </a>
                 </li>
                 <li class="sidebar-title">
                     <span>NAVIGATION</span>
-                </li>
-                <li class="sidebar-list">
-                    <a href="#">Dashboard <span class="menu-icon fa fa-tachometer"></span></a>
                 </li>
                 <li class="sidebar-list">
                     <a href="#/admin">Admin <span class="menu-icon fa fa-table"></span></a>
@@ -64,36 +61,7 @@
                     <div class="col-xs-12">
                         <div class="user pull-right">
                             <div class="item dropdown">
-                                <a href="#" class="dropdown-toggle">
-                                    <img src="img/avatar.jpg">
-                                </a>
-                                <ul class="dropdown-menu dropdown-menu-right">
-                                    <li class="dropdown-header">
-                                        Joe Bloggs
-                                    </li>
-                                    <li class="divider"></li>
-                                    <li class="link">
-                                        <a href="#">
-                                            Profile
-                                        </a>
-                                    </li>
-                                    <li class="link">
-                                        <a href="#">
-                                            Menu Item
-                                        </a>
-                                    </li>
-                                    <li class="link">
-                                        <a href="#">
-                                            Menu Item
-                                        </a>
-                                    </li>
-                                    <li class="divider"></li>
-                                    <li class="link">
-                                        <a href="#">
-                                            Logout
-                                        </a>
-                                    </li>
-                                </ul>
+                                <!-- Add user logout here -->
                             </div>
                             <div class="item dropdown" data-ng-controller="AlertsCtrl">
                                 <a href="#" class="dropdown-toggle">
@@ -108,9 +76,6 @@
                                     <li data-ng-repeat="alert in alerts">
                                         <a href="#/product">{{ alert.msg }}</a>
                                     </li>
-                                    <!-- <li>
-                                        <a href="#">Server Down!</a>
-                                    </li> -->
                                 </ul>
                             </div>
                         </div>
@@ -127,7 +92,7 @@
                 <!-- End Header Bar -->
 
                 <!-- Alerts section for all views -->
-                <div class="row alerts-container"data-ng-show="flashMessage != '' ">
+                <div class="row alerts-container" data-ng-show="flashMessage != '' ">
                     <div class="col-xs-12">
                         <alert type="info" close="flashMessage=''">{{ flashMessage }}</alert>
                     </div>

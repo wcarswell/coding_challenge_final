@@ -2,10 +2,10 @@
 
 /**
  * @ngdoc function
- * @name yapp.controller:ClinicCtrl
+ * @name RDash.controller:ClinicCtrl
  * @description
  * # ClinicCtrl
- * Controller of yapp
+ * Controller of RDash
  */
 angular
     .module('RDash')

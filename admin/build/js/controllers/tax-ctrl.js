@@ -2,17 +2,17 @@
 
 /**
  * @ngdoc function
- * @name yapp.controller:CountryCtrl
+ * @name RDash.controller:CountryCtrl
  * @description
  * # CountryCtrl
- * Controller of yapp
+ * Controller of RDash
  */
 angular
     .module('RDash')
     .controller('TaxCtrl', ['$scope', '$state', '$http', '$modal', '$log', TaxCtrl]);
 
 function TaxCtrl($scope, $state, $http, $modal, $log) {
-   // Controller configs
+    // Controller configs
     $scope.config = {
         'new': 'Add Tax For Country', // modal new description
         'modify': 'Modify Tax Setup', // modal modify description
