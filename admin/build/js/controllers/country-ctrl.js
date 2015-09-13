@@ -25,7 +25,7 @@ function CountryCtrl($scope, $state, $http, $modal, $log, LowStockService) {
     	'endPoint': '/admin/country/' // endpoint for country
     }
 
-    // Set the default sort tyype
+    // Set the default sort type
 	$scope.sortType     = 'name';
 
 	// Set the default sort order
@@ -149,7 +149,7 @@ function ModalCountryCtrl($scope, $modalInstance, $http, country, action, config
 	// Event for inserting/updating a country
     $scope.ok = function() {
     	var msg = '';
-    	
+
     	// Validation
     	if($scope.selected.name === '') {
     		msg += 'Country name cannot be empty\n';

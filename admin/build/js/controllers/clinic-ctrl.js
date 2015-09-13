@@ -9,15 +9,15 @@
  */
 angular
     .module('RDash')
-    .controller('ClinicCtrl', ['$scope', '$state', '$http', '$modal', '$log', ClinicCtrl]);
+    .controller('ClinicCtrl', ['$scope', '$state', '$http', '$modal', '$log', 'LowStockService', ClinicCtrl]);
 
-function ClinicCtrl($scope, $state, $http, $modal, $log) {
+function ClinicCtrl($scope, $state, $http, $modal, $log, LowStockService) {
 
     // Controller configs
     $scope.config = {
         'new': 'Add Clinic', // modal new description
         'modify': 'Modify Clinic', // modal modify description
-        'modalSize': 'sm', // modal size
+        'modalSize': '', // modal size
         'templateUrl': 'clinic.html', // template view to parse modal scope
         'controller': 'ModalClinicCtrl', // modal controller
         'endPoint': '/admin/clinic/', // endpoint for clinic
@@ -29,6 +29,12 @@ function ClinicCtrl($scope, $state, $http, $modal, $log) {
 
     // Set the state of navigation    
     $scope.$state = $state;
+
+    // Set the default sort type
+    $scope.sortType = 'name';
+
+    // Set the default sort order
+    $scope.sortReverse  = false;  // set the default sort order
 
     // Loads/Reloads clinic list
     $scope.reloadClinicList = function() {
@@ -73,6 +79,9 @@ function ClinicCtrl($scope, $state, $http, $modal, $log) {
             if (response.data.status != 'fail') {
                 // Reload clinic list on success
                 $scope.reloadClinicList();
+
+                // Display deleted message
+                LowStockService.displayFlashMessage('Clinic deleted: ' + clinic.name + ' at country ' + clinic.country_name);
             } else {
                 // Alert user on any errors
                 alert(response.data.message);
@@ -109,9 +118,16 @@ function ClinicCtrl($scope, $state, $http, $modal, $log) {
         });
 
         // Bind callback functions for save/cancel button
-        modalClinic.result.then(function(selectedItem) {
+        modalClinic.result.then(function(action) {
             // Reload clinic list on success
             $scope.reloadClinicList();
+
+            // Display deleted/updated message
+            if(action == $scope.config.new) {
+                LowStockService.displayFlashMessage('Clinic added');
+            } else {
+                LowStockService.displayFlashMessage('Clinic modfied: ' + clinic.name);
+            }
         }, function() {
             // Log messaging for debug purpose
             $log.info('Modal dismissed at: ' + new Date());
@@ -139,34 +155,46 @@ function ModalClinicCtrl($scope, $modalInstance, $http, clinic, action, config, 
 
     // Event for inserting/updating a clinic
     $scope.ok = function() {
-        var url = config.endPoint;
+        var msg = '';
 
-        // Add clinic_id if modifying
-        if (clinic.hasOwnProperty('clinic_id')) {
-            url += clinic.clinic_id + '/';
+        // Validation
+        if($scope.selected.name === '') {
+            msg += 'Clinic name cannot be empty\n';
         }
 
-        // Ajax call to post to clinic information
-        $http({
-            url: url,
-            method: "POST",
-            data: {
-                'clinic': $scope.selected
+        // Only insert/update if no errors
+        if(msg == '') {
+            var url = config.endPoint;
+
+            // Add clinic_id if modifying
+            if (clinic.hasOwnProperty('clinic_id')) {
+                url += clinic.clinic_id + '/';
             }
-        })
-        .then(function(response) {
-            if (response.data.status != 'fail') {
-                // Close modal on success
-                $modalInstance.close();
-            } else {
-                // Alert user on any errors
-                alert(response.data.message);
-            }
-        },
-        function(response) { // optional
-            // Inserting/Updating has failed, alert user
-            alert('Failed to insert/update clinic');
-        });
+
+            // Ajax call to post to clinic information
+            $http({
+                url: url,
+                method: "POST",
+                data: {
+                    'clinic': $scope.selected
+                }
+            })
+            .then(function(response) {
+                if (response.data.status != 'fail') {
+                    // Close modal on success
+                    $modalInstance.close(action);
+                } else {
+                    // Alert user on any errors
+                    alert(response.data.message);
+                }
+            },
+            function(response) { // optional
+                // Inserting/Updating has failed, alert user
+                alert('Failed to insert/update clinic');
+            });
+        } else {
+            alert(msg);
+        }
     };
 
     // Event to dismiss modal

@@ -9,32 +9,90 @@
                 <div class="table-responsive">
                     <!-- Only show table if we received data -->
                     <table class="table table-striped" ng-show="clinics.length > 0">
-                        <tr>
-                            <th>Clinic</th>
-                            <th>Street</th>
-                            <th>City</th>
-                            <th>Province</th>
-                            <th>Post Code</th>
-                            <th>Telephone Number</th>
-                            <th>Fax Number</th>
-                            <th>Clinic Number</th>
-                            <th>Country</th>
-                            <th>Action</th>
-                        </tr>
-                        <tr ng-repeat="clinic in clinics track by $index">
-                            <td>{{clinic.name}}</td>
-                            <td>{{clinic.street}}</td>
-                            <td>{{clinic.city}}</td>
-                            <td>{{clinic.province}}</td>
-                            <td>{{clinic.post_code}}</td>
-                            <td>{{clinic.telephone_number}}</td>
-                            <td>{{clinic.fax_number}}</td>
-                            <td>{{clinic.clinic_number}}</td>
-                            <td>{{clinic.country_name}}</td>
-                            <td>
-                            <button class="btn btn-primary" ng-click="modify(clinic)">Modify</button>
-                            <button class="btn btn-danger" ng-click="delete(clinic)">Delete</button></td>
-                        </tr>
+                        <thead>
+                            <tr>
+                                <th>
+                                    <a href="javascript: void(0);" ng-click="sortType = 'name'; sortReverse = !sortReverse">
+                                        <span ng-show="sortType == 'name' && !sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType == 'name' && sortReverse" class="fa fa-caret-up"></span>
+                                        Clinic
+                                    </a>
+                                </th>
+                                <th>
+                                    <a href="javascript: void(0);" ng-click="sortType = 'country_name'; sortReverse = !sortReverse">
+                                        <span ng-show="sortType == 'country_name' && !sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType == 'country_name' && sortReverse" class="fa fa-caret-up"></span>
+                                        Country
+                                    </a>
+                                </th>
+                                <th>
+                                    <a href="javascript: void(0);" ng-click="sortType = 'street'; sortReverse = !sortReverse">
+                                        <span ng-show="sortType == 'street' && !sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType == 'street' && sortReverse" class="fa fa-caret-up"></span>
+                                        Street
+                                    </a>
+                                </th>
+                                <th>
+                                    <a href="javascript: void(0);" ng-click="sortType = 'city'; sortReverse = !sortReverse">
+                                        <span ng-show="sortType == 'city' && !sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType == 'city' && sortReverse" class="fa fa-caret-up"></span>
+                                        City
+                                    </a>
+                                </th>
+                                <th>
+                                    <a href="javascript: void(0);" ng-click="sortType = 'province'; sortReverse = !sortReverse">
+                                        <span ng-show="sortType == 'province' && !sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType == 'province' && sortReverse" class="fa fa-caret-up"></span>
+                                        Province
+                                    </a>
+                                </th>
+                                <th>
+                                    <a href="javascript: void(0);" ng-click="sortType = 'post_code'; sortReverse = !sortReverse">
+                                        <span ng-show="sortType == 'post_code' && !sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType == 'post_code' && sortReverse" class="fa fa-caret-up"></span>
+                                        Post Code
+                                    </a>
+                                </th>
+                                <th>
+                                    <a href="javascript: void(0);" ng-click="sortType = 'telephone_number'; sortReverse = !sortReverse">
+                                        <span ng-show="sortType == 'telephone_number' && !sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType == 'telephone_number' && sortReverse" class="fa fa-caret-up"></span>
+                                        Telephone Number
+                                    </a>
+                                </th>
+                                <th>
+                                    <a href="javascript: void(0);" ng-click="sortType = 'fax_number'; sortReverse = !sortReverse">
+                                        <span ng-show="sortType == 'fax_number' && !sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType == 'fax_number' && sortReverse" class="fa fa-caret-up"></span>
+                                        Fax Number
+                                    </a>
+                                </th>
+                                <th>
+                                    <a href="javascript: void(0);" ng-click="sortType = 'clinic_number'; sortReverse = !sortReverse">
+                                        <span ng-show="sortType == 'clinic_number' && !sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType == 'clinic_number' && sortReverse" class="fa fa-caret-up"></span>
+                                        Clinic Number
+                                    </a>
+                                </th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="clinic in clinics | orderBy:sortType:sortReverse">
+                                <td>{{clinic.name}}</td>
+                                <td>{{clinic.country_name}}</td>
+                                <td>{{clinic.street}}</td>
+                                <td>{{clinic.city}}</td>
+                                <td>{{clinic.province}}</td>
+                                <td>{{clinic.post_code}}</td>
+                                <td>{{clinic.telephone_number}}</td>
+                                <td>{{clinic.fax_number}}</td>
+                                <td>{{clinic.clinic_number}}</td>
+                                <td>
+                                <button class="btn btn-primary" ng-click="modify(clinic)">Modify</button>
+                                <button class="btn btn-danger" ng-click="delete(clinic)">Delete</button></td>
+                            </tr>
+                        </tbody>
                     </table>
                 </div>
             </rd-widget-body>
@@ -46,6 +104,11 @@
                 <h3 class="modal-title">{{ action }}</h3>
             </div>
             <div class="modal-body">
+                <div class="form-group">
+                    <label>Country Name:</label>
+                    <select ng-model="selected.country_id" ng-options="country.country_id as country.name for country in countries">
+                    </select>
+                </div>
                 <div class="form-group">
                     <label>Clinic Name:</label>
                     <input type="text" ng-model="selected.name" class="form-control">
@@ -77,11 +140,6 @@
                 <div class="form-group">
                     <label>Clinic Number:</label>
                     <input type="text" ng-model="selected.clinic_number" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label>Country Name:</label>
-                    <select ng-model="selected.country_id" ng-options="country.country_id as country.name for country in countries">
-                    </select>
                 </div>
             </div>
             <div class="modal-footer">
