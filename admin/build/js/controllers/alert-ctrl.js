@@ -14,18 +14,12 @@ function AlertsCtrl($scope, $http) {
         'endPoint': '/reports/low_stock/' // endpoint of low stock
     }
 
-
-    $scope.$on('addAlert', function(msg) {
-        $scope.addAlert(msg);
-    });
-
-    $scope.addAlert = function(type, msg) {
+    $scope.addAlert = function(data) {
+        console.log(data);
         $scope.alerts.push({ 
-            type: type,
-            msg: msg 
+            type: data.type,
+            msg: data.msg 
         });
-
-        console.log($scope.alerts);
     };
 
     $scope.closeAlert = function(index) {
@@ -43,11 +37,14 @@ function AlertsCtrl($scope, $http) {
 
             // Show products with low stock
             for(var i = 0; i < data.length; i ++) {
-                $scope.addAlert('danger', data[i].clinic_name + ' is low on ' + data[i].name);
+                var msg = data[i].clinic_name + ' is low on 1' + data[i].name;
+
+                $scope.addAlert({ type: 'danger', msg: msg });
             }
         });
     }
 
+    // Bind a broadcast to reload low stock alerts
     $scope.$on('reloadLowStockAlert', function() {
         $scope.reloadLowStockList();
     });

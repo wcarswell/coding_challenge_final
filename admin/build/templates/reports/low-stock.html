@@ -20,7 +20,7 @@
                             <td>{{product.clinic_name}}</td>
                             <td>{{product.type}}</td>
                             <td>{{product.name}}</td>
-                            <td><span class="label" ng-class="{'label-warning':product.quantity_on_hand==3,'label-danger':product.quantity_on_hand<2,'label-default':product.quantity_on_hand>3}">{{product.quantity_on_hand}}</span></td>
+                            <td><span class="label" ng-class="{'label-warning':product.quantity_on_hand==3,'label-danger':product.quantity_on_hand<=2,'label-default':product.quantity_on_hand>3}">{{product.quantity_on_hand}}</span></td>
                         </tr>
                     </table>
                 </div>

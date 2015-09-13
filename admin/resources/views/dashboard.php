@@ -126,6 +126,12 @@
                 </div>
                 <!-- End Header Bar -->
 
+                <!-- Alerts section for all views -->
+                <div class="row alerts-container"data-ng-show="flashMessage != '' ">
+                    <div class="col-xs-12">
+                        <alert type="info" close="flashMessage=''">{{ flashMessage }}</alert>
+                    </div>
+                </div>
                 <!-- Main Content -->
                 <div ui-view></div>
 

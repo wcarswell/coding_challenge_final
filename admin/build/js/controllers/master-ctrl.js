@@ -12,8 +12,10 @@ function MasterCtrl($scope, $cookieStore, $state, $http) {
     
     // Set the state of navigation   
     $scope.$state = $state;
-    
+
     var mobileView = 992;
+
+    $scope.flashMessage = 'test';
 
     $scope.getWidth = function() {
         return window.innerWidth;
@@ -40,7 +42,13 @@ function MasterCtrl($scope, $cookieStore, $state, $http) {
         $cookieStore.put('toggle', $scope.toggle);
     };
 
-    
+    $scope.$on('displayFlashMessage', function(events, args) {
+        $scope.displayFlashMessage(args.msg);
+    });
+
+    $scope.displayFlashMessage = function(msg) {
+        $scope.flashMessage = msg;
+    }
 
     window.onresize = function() {
         $scope.$apply();
@@ -62,6 +70,10 @@ function LowStockService($rootScope) {
 
     sharedService.reloadLowStockAlert = function() {
         $rootScope.$broadcast('reloadLowStockAlert');
+    }
+
+    sharedService.displayFlashMessage = function(msg) {
+        $rootScope.$broadcast('displayFlashMessage', { msg: msg });
     }
 
     return sharedService;
