@@ -19,7 +19,8 @@ api and api.v2 alongside admin repo
 http://challenge.opendoorstudio.co.za
 
 ## Repository explained
-1) .htaccess redirects all incoming http calls for admin repo to index.php via apache rewrite rules
+1) root directory is admin/
+- .htaccess redirects all incoming http calls for admin repo to index.php via apache rewrite rules
 
 2) index.php creates Lumen application instance and executes the instance
 - bootstrap/app.php
